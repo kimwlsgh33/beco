@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "388032541043",
+    "project_id": "beco-6f572",
+    "storage_bucket": "beco-6f572.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388032541043:android:1354b18ac510929dda1506",
+        "android_client_info": {
+          "package_name": "com.example.beco"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "388032541043-khi38air85tuvrjuguqopj9kf2a93l2i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDYmSBW6kDWBu1ArTJWwBlrbU6WUqo5WY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "388032541043-khi38air85tuvrjuguqopj9kf2a93l2i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "388032541043-p88lful8gts6vpgog1hfbfn4k7ta07qs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.beco"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
