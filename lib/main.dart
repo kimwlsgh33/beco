@@ -1,10 +1,9 @@
-import 'package:beco/firebase_options.dart';
 import 'package:beco/responsive/mobile_screen_layout.dart';
 import 'package:beco/responsive/responsive_layout_screen.dart';
 import 'package:beco/responsive/web_screen_layout.dart';
 import 'package:beco/screens/login_screen.dart';
-import 'package:beco/screens/signup_screen.dart';
 import 'package:beco/utils/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:beco/widgets/kakao_rooms.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -42,12 +41,34 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: mobileBackgroundColor,
       ),
-      // home: const ResponsiveLayout(
-      //   webScreenLayout: WebScreenLayout(),
-      //   mobileScreenLayout: MobileScreenLayout(),
-      // ),
-      // home: LoginScreen(),
-      home: SignupScreen(),
+      // StreamBuilder는 스트림을 구독하고, 스트림의 데이터가 변경될 때마다 새로운 위젯을 생성
+      home: StreamBuilder(
+        // idTokenChanges : id, token, refresh token, access token 등의 변경을 감지
+        // stateChanges : 로그인, 로그아웃, 회원가입 등의 유저상태 변경을 감지
+        // authStateChanges : 로그인, 로그아웃 등의 유저 유무 상태 변경을 감지
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            // 로그인이 되어있는 상태
+            if (snapshot.hasData) {
+              return const ResponsiveLayout(
+                mobileScreen: MobileScreenLayout(),
+                webScreen: WebScreenLayout(),
+              );
+            } else {
+              // 로그인이 안되어있는 상태
+              return const LoginScreen();
+            }
+          } else {
+            // 로그인 상태를 확인하는 중
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }

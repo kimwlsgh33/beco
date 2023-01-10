@@ -1,4 +1,11 @@
+import 'package:beco/resources/auth_method.dart';
+import 'package:beco/responsive/mobile_screen_layout.dart';
+import 'package:beco/responsive/responsive_layout_screen.dart';
+import 'package:beco/responsive/web_screen_layout.dart';
+import 'package:beco/screens/home_screen.dart';
+import 'package:beco/screens/signup_screen.dart';
 import 'package:beco/utils/colors.dart';
+import 'package:beco/utils/utils.dart';
 import 'package:beco/widgets/text_field_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,11 +22,38 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  bool _isLoading = false;
+
   @override
   void dispose() {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+  }
+
+  void loginUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethod().loginUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+
+    if (res == "success") {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+            builder: (context) => const ResponsiveLayout(
+                  mobileScreen: MobileScreenLayout(),
+                  webScreen: WebScreenLayout(),
+                )),
+      );
+    } else {
+      showSnackBar(context, res);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -35,8 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Flexible(
-                child: Container(),
                 flex: 2,
+                child: Container(),
               ),
               //svg image
               SvgPicture.asset(
@@ -62,36 +96,49 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20),
               //button login
               InkWell(
-                child: Container(
-                  child: const Text('Log in'),
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: const ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                onTap: loginUser,
+                child: _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        decoration: const ShapeDecoration(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          color: blueColor,
+                        ),
+                        child: const Text('Log in'),
                       ),
-                    ),
-                    color: blueColor,
-                  ),
-                ),
               ),
               const SizedBox(height: 12),
-              Flexible(child: Container(), flex: 2),
+              Flexible(
+                flex: 2,
+                child: Container(),
+              ),
               //Transitioning to the sign up screen
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    child: const Text("Don't have an account?"),
                     padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: const Text("Don't have an account?"),
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/signup');
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const SignupScreen(),
+                        ),
+                      );
                     },
                     child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: const Text(
                         "Sign up",
                         style: TextStyle(
@@ -99,7 +146,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                   )
                 ],
