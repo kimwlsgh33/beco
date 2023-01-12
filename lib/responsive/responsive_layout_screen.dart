@@ -1,5 +1,5 @@
 import 'package:beco/providers/user_provider.dart';
-import 'package:beco/utils/dimensions.dart';
+import 'package:beco/utils/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

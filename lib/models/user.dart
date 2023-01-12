@@ -41,7 +41,7 @@ class User {
       };
 
   // convert DocumentSnapshot to User ( for firebase )
-  static User fromSnapshot(DocumentSnapshot snap) {
+  static User fromSnap(DocumentSnapshot snap) {
     var data = snap.data() as Map<String, dynamic>;
 
     return User(

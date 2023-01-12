@@ -19,7 +19,7 @@ class AuthMethod {
         await _firestore.collection('users').doc(firebaseUser.uid).get();
 
     // snapshot을 model.User로 변환하는 메소드를 사용
-    return model.User.fromSnapshot(snap);
+    return model.User.fromSnap(snap);
 
     // return model.User.fromJson(documentSnapshot.data() as Map<String, dynamic>);
   }

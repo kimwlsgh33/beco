@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class StorageMethods {
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -19,6 +20,13 @@ class StorageMethods {
     Reference ref =
         _storage.ref().child(childName).child(_auth.currentUser!.uid);
     // root/childName/uid
+
+    // 만약에 포스트라면, 포스트의 고유 id를 파일 이름으로 사용
+    if (isPost) {
+      String id = const Uuid().v1();
+      ref = ref.child(id);
+      // root/childName/uid/id
+    }
 
     // putData() : storage에 데이터를 업로드 ( putFile() : storage에 파일을 업로드 - File 클래스로 바꿔야해서 사용하지 않음 )
     // UploadTask : 업로드 작업을 추적하는 클래스
