@@ -1,12 +1,29 @@
+import 'package:beco/models/user.dart' as model;
 import 'package:beco/resources/storage_method.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
 class AuthMethod {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<model.User> getCurrentUser() async {
+  // getCurrentUser() async {
+    // firebase_auth 에서 현재 로그인된 유저 정보를 가져옴
+    User firebaseUser = _auth.currentUser!;
+
+    // firestore에 저장된 유저의 정보를 가져옴
+    DocumentSnapshot snap =
+        await _firestore.collection('users').doc(firebaseUser.uid).get();
+
+    // snapshot을 model.User로 변환하는 메소드를 사용
+    return model.User.fromSnapshot(snap);
+
+    // return model.User.fromJson(documentSnapshot.data() as Map<String, dynamic>);
+  }
+
   // Future signInWithEmailAndPassword(String email, String password) async {
   //   try {
   //     UserCredential result = await _auth.signInWithEmailAndPassword(
@@ -45,20 +62,25 @@ class AuthMethod {
 
         // print(firebaseUser!.uid);
 
+        // Create a new document for the user with the uid ( json )
+        model.User user = model.User(
+          uid: firebaseUser!.uid,
+          email: email,
+          username: username,
+          bio: bio,
+          photoUrl: photoUrl,
+          followers: [],
+          following: [],
+        );
+
         // add user to firestore
         // 1. create or update users collection
         // 2. create or find user document
         // 3. add user data to user document
-
-        await _firestore.collection("users").doc(firebaseUser!.uid).set({
-          "uid": firebaseUser.uid,
-          "email": email,
-          "username": username,
-          "bio": bio,
-          "profileImage": photoUrl,
-          "followers": [],
-          "following": [],
-        });
+        await _firestore
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .set(user.toJson());
 
         // if use add() instead of set(), it will create a new document with a random id ( not uid )
         // await _firestore.collection("users").add({
