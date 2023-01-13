@@ -2,7 +2,7 @@ import 'package:beco/resources/auth_method.dart';
 import 'package:beco/responsive/mobile_screen_layout.dart';
 import 'package:beco/responsive/responsive_layout_screen.dart';
 import 'package:beco/responsive/web_screen_layout.dart';
-import 'package:beco/screens/login_screen.dart';
+// import 'package:beco/screens/login_screen.dart';
 import 'package:beco/utils/colors.dart';
 import 'package:beco/utils/utils.dart';
 import 'package:beco/widgets/text_field_input.dart';
@@ -55,13 +55,13 @@ class _SignupScreenState extends State<SignupScreen> {
       password: _passwordController.text,
       username: _usernameController.text,
       bio: _bioController.text,
-      file: _image!,
+      file: _image,
     );
-
     setState(() {
       _isLoading = false;
     });
 
+    if(!mounted) return;
     if (res != "success") {
       showSnackBar(context, res);
     } else {
@@ -180,21 +180,22 @@ class _SignupScreenState extends State<SignupScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: const Text("Don't have an account?"),
+                    child: const Text("Already have an account? "),
                   ),
                   GestureDetector(
                     onTap: () {
+                      Navigator.pop(context);
                       // Navigator.pushNamed(context, '/signup');
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
-                      );
+                      // Navigator.of(context).pushReplacement(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const LoginScreen(),
+                      //   ),
+                      // );
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: const Text(
-                        "Sign up",
+                        "Login",
                         style: TextStyle(
                           color: blueColor,
                           fontWeight: FontWeight.bold,

@@ -44,4 +44,75 @@ class FirestoreMethods {
     }
     return res;
   }
+
+  Future<void> likePost({
+    required String postId,
+    required String uid,
+    required List likes,
+  }) async {
+    try {
+      if (likes.contains(uid)) {
+        // set vs update : set은 전체를 덮어쓰고, update는 일부만 업데이트
+        await _firestore.collection("posts").doc(postId).update(
+          {
+            "likes":
+                FieldValue.arrayRemove([uid]), // arrayRemove : 배열에서 특정 값을 제거
+          },
+        );
+      } else {
+        await _firestore.collection("posts").doc(postId).update(
+          {
+            "likes": FieldValue.arrayUnion([uid]), // arrayUnion : 배열에 특정 값을 추가
+          },
+        );
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<String> addComment({
+    required String postId,
+    required String text,
+    required String uid,
+    required String username,
+    required String profImage,
+  }) async {
+    String res = "Something went wrong";
+    try {
+      if (text.isNotEmpty) {
+        String commentId = const Uuid().v1();
+        await _firestore
+            .collection("posts")
+            .doc(postId)
+            .collection("comments")
+            .doc(commentId)
+            .set(
+          {
+            "commentId": commentId,
+            "text": text,
+            "uid": uid,
+            "username": username,
+            "profImage": profImage,
+            "datePublished": DateTime.now(),
+          },
+        );
+
+        res = "success";
+      } else {
+        res = "comment is empty";
+      }
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
+  }
+
+  Future<void> deletePost(String postId) async {
+    try {
+      await _firestore.collection("posts").doc(postId).delete();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }

@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           // idTokenChanges : id, token, refresh token, access token 등의 변경을 감지
           // stateChanges : 로그인, 로그아웃, 회원가입 등의 유저상태 변경을 감지
           // authStateChanges : 로그인, 로그아웃 등의 유저 유무 상태 변경을 감지
-          stream: FirebaseAuth.instance.authStateChanges(),
+          stream: FirebaseAuth.instance.idTokenChanges(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.active) {
               // 로그인이 되어있는 상태

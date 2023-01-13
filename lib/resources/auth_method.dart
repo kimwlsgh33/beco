@@ -10,7 +10,7 @@ class AuthMethod {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<model.User> getCurrentUser() async {
-  // getCurrentUser() async {
+    // getCurrentUser() async {
     // firebase_auth 에서 현재 로그인된 유저 정보를 가져옴
     User firebaseUser = _auth.currentUser!;
 
@@ -39,15 +39,15 @@ class AuthMethod {
     required String password,
     required String username,
     required String bio,
-    required Uint8List file,
+    Uint8List? file,
   }) async {
     String res = "Something went wrong";
     try {
-      if (email.isNotEmpty ||
-          password.isNotEmpty ||
-          username.isNotEmpty ||
-          bio.isNotEmpty ||
-          file.isNotEmpty) {
+      if (email.isNotEmpty &&
+          password.isNotEmpty &&
+          username.isNotEmpty &&
+          bio.isNotEmpty &&
+          file != null) {
         // Create a new user
         UserCredential result = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
@@ -144,5 +144,10 @@ class AuthMethod {
       res = e.toString();
     }
     return res;
+  }
+
+  // logging out user
+  Future<void> logoutUser() async {
+    await _auth.signOut();
   }
 }

@@ -2,7 +2,6 @@ import 'package:beco/resources/auth_method.dart';
 import 'package:beco/responsive/mobile_screen_layout.dart';
 import 'package:beco/responsive/responsive_layout_screen.dart';
 import 'package:beco/responsive/web_screen_layout.dart';
-import 'package:beco/screens/home_screen.dart';
 import 'package:beco/screens/signup_screen.dart';
 import 'package:beco/utils/colors.dart';
 import 'package:beco/utils/utils.dart';
@@ -32,16 +31,22 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginUser() async {
+
     setState(() {
       _isLoading = true;
     });
+
     String res = await AuthMethod().loginUser(
       email: _emailController.text,
       password: _passwordController.text,
     );
 
+    // mounted는 위젯이 현재 트리에 있는지 확인
+    if(!mounted) return;
+
     if (res == "success") {
-      Navigator.of(context).pushReplacement(
+      Navigator.pushReplacement(
+        context,
         MaterialPageRoute(
             builder: (context) => const ResponsiveLayout(
                   mobileScreen: MobileScreenLayout(),
@@ -127,11 +132,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: const Text("Don't have an account?"),
+                    child: const Text("Don't have an account? "),
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pushReplacement(
+                      // pushReplacement: 현재 화면을 제거하고 새로운 화면으로 이동
+                      // Navigator.of(context).pushReplacement(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const SignupScreen(),
+                      //   ),
+                      // );
+                      Navigator.push(
+                        context,
                         MaterialPageRoute(
                           builder: (context) => const SignupScreen(),
                         ),
