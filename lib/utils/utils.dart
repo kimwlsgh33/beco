@@ -1,3 +1,4 @@
+import 'package:beco/models/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -18,6 +19,83 @@ showSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
+    ),
+  );
+}
+
+iconMenuModal({
+  required BuildContext context,
+  String? title,
+  required List<Menu> list,
+  leading = true,
+}) {
+  return showModalBottomSheet(
+    backgroundColor: Colors.grey.shade800,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20),
+        topRight: Radius.circular(20),
+      ),
+    ),
+    context: context,
+    builder: (context) => Wrap(
+      // mainAxisSize: MainAxisSize.min,
+      children: [
+        // make slide bar
+        title == null
+            ? Container()
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        height: 5,
+                        width: 50,
+                        margin: const EdgeInsets.only(top: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade600,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 25, bottom: 10),
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+        const Divider(height: 0, color: Colors.white24),
+        ListView.separated(
+          shrinkWrap: true,
+          itemCount: list.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              onTap: list[index].onTap,
+              leading: leading ? Icon(list[index].icon) : null,
+              trailing: leading
+                  ? null
+                  : Icon(
+                      list[index].icon,
+                      color: Colors.white,
+                    ),
+              title: Text(
+                list[index].title,
+                style: const TextStyle(color: Colors.white),
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const Divider(height: 0, color: Colors.white24);
+          },
+        ),
+        const SizedBox(height: 30),
+      ],
     ),
   );
 }

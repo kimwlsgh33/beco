@@ -6,14 +6,16 @@ class FollowButton extends StatelessWidget {
   final Color borderColor;
   final String text;
   final Color textColor;
+  Icon? icon;
 
-  const FollowButton({
+  FollowButton({
     super.key,
-    required this.backgroundColor,
-    required this.borderColor,
+    this.backgroundColor = Colors.blueAccent,
+    this.borderColor = Colors.blueAccent,
     required this.text,
-    required this.textColor,
+    this.textColor = Colors.white,
     this.onPressed,
+    this.icon,
   });
 
   @override
@@ -24,21 +26,25 @@ class FollowButton extends StatelessWidget {
         onPressed: onPressed,
         style: TextButton.styleFrom(
           backgroundColor: backgroundColor,
+          padding: const EdgeInsets.all(0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(10),
             side: BorderSide(color: borderColor),
           ),
         ),
-        child: Container(
-          height: 22,
-          alignment: Alignment.center,
-          child: Text(
-            text,
-            style: TextStyle(
-              color: textColor,
-              fontWeight: FontWeight.bold,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                color: textColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+            icon ?? Container(),
+          ],
         ),
       ),
     );

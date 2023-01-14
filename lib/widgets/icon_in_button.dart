@@ -5,16 +5,16 @@ class IconInButton extends StatelessWidget {
   final Function()? onPressed;
   final Color backgroundColor;
   final Color borderColor;
-  final IconData icon;
-  final Color iconColor;
+  final Icon icon;
+  final EdgeInsets padding;
 
   const IconInButton({
     super.key,
     required this.icon,
     this.backgroundColor = mobileBackgroundColor,
-    this.iconColor = primaryColor,
     this.onPressed,
     required this.borderColor,
+    required this.padding,
   });
 
   @override
@@ -23,19 +23,17 @@ class IconInButton extends StatelessWidget {
       onPressed: onPressed,
       style: TextButton.styleFrom(
         minimumSize: Size.zero,
+        padding: EdgeInsets.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: backgroundColor),
         ),
       ),
       child: Container(
-        height: 22,
-        alignment: Alignment.center,
-        child: Icon(
-          icon,
-          color: iconColor,
-        ),
+        padding: padding,
+        child: Center(child: icon),
       ),
     );
   }

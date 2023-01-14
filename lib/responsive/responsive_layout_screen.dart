@@ -26,9 +26,9 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
   addData() async {
     // Provider.of(context) : context를 통해 Provider를 가져옴
-    UserProvider _userProvider = Provider.of(context, listen: false);
+    UserProvider userProvider = Provider.of(context, listen: false);
     // 저장된 유저 정보를 가져오는 메소드
-    await _userProvider.refreshUser();
+    await userProvider.refreshUser();
   }
 
   @override

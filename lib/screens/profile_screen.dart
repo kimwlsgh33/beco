@@ -1,3 +1,4 @@
+import 'package:beco/models/menu.dart';
 import 'package:beco/resources/firestore_methods.dart';
 import 'package:beco/utils/colors.dart';
 import 'package:beco/utils/utils.dart';
@@ -24,59 +25,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isFollowing = false, isMe = true, isLoading = false;
 
   @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
-  void getData() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      var userSnap = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.uid)
-          .get();
-      var postSnap = await FirebaseFirestore.instance
-          .collection('posts')
-          .where('uid', isEqualTo: widget.uid)
-          .get();
-
-      postLen = postSnap.docs.length;
-      postData = postSnap.docs;
-      following = userSnap.data()!['following'].length;
-      followers = userSnap.data()!['followers'].length;
-      userData = userSnap.data();
-      isFollowing = userSnap
-          .data()!['followers']
-          .contains(FirebaseAuth.instance.currentUser!.uid);
-    } catch (e) {
-      showSnackBar(context, e.toString());
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  followUser() async {
-    await FirestoreMethods()
-        .followUser(FirebaseAuth.instance.currentUser!.uid, widget.uid);
-
-    if (isFollowing) {
-      setState(() {
-        isFollowing = false;
-        followers--;
-      });
-    } else {
-      setState(() {
-        isFollowing = true;
-        followers++;
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return isLoading
         ? const Center(
@@ -85,6 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : Scaffold(
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
+              centerTitle: !isMe,
               title: Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: Text(
@@ -96,7 +45,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              centerTitle: false,
+              actions: [
+                isMe
+                    ? Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.add_box_outlined, size: 30),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.menu_rounded, size: 30),
+                            onPressed: () {
+                              iconMenuModal(
+                                context: context,
+                                list: [
+                                  Menu(
+                                    title: 'Report',
+                                    icon: Icons.report,
+                                    onTap: () {
+                                      print('Report');
+                                    },
+                                  ),
+                                  Menu(
+                                    title: 'Block',
+                                    icon: Icons.block,
+                                    onTap: () {
+                                      print('Block');
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          iconMenuModal(
+                            context: context,
+                            list: [
+                              Menu(
+                                title: 'Report',
+                                icon: Icons.report,
+                                onTap: () {
+                                  print('Report');
+                                },
+                              ),
+                              Menu(
+                                title: 'Block',
+                                icon: Icons.block,
+                                onTap: () {
+                                  print('Block');
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                        icon: const Icon(Icons.more_vert),
+                      ),
+              ],
             ),
             body: ListView(
               children: [
@@ -146,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            FirebaseAuth.instance.currentUser!.uid == widget.uid
+                            isMe
                                 ? Expanded(
                                     child: Row(
                                       children: [
@@ -160,42 +167,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ],
                                     ),
                                   )
-                                : isFollowing
-                                    ? FollowButton(
-                                        backgroundColor: mobileBackgroundColor,
-                                        borderColor: Colors.grey.shade800,
-                                        text: 'Following',
-                                        textColor: primaryColor,
-                                        onPressed: followUser,
-                                      )
-                                    : FollowButton(
-                                        backgroundColor: Colors.blueAccent,
-                                        borderColor: Colors.blueAccent,
-                                        text: 'Follow',
-                                        textColor: primaryColor,
-                                        onPressed: followUser,
-                                      ),
-                            const SizedBox(width: 10),
-                            FollowButton(
-                              backgroundColor: Colors.grey.shade800,
-                              borderColor: Colors.grey.shade800,
-                              text: 'Message',
-                              textColor: primaryColor,
-                              onPressed: followUser,
-                            ),
-                            const SizedBox(width: 10),
+                                : Expanded(
+                                    child: Row(
+                                      children: [
+                                        isFollowing
+                                            ? FollowButton(
+                                                backgroundColor:
+                                                    Colors.grey.shade800,
+                                                borderColor:
+                                                    Colors.grey.shade800,
+                                                text: 'Following',
+                                                textColor: primaryColor,
+                                                onPressed: () {
+                                                  iconMenuModal(
+                                                      title:
+                                                          userData['username'],
+                                                      context: context,
+                                                      list: [
+                                                        Menu(
+                                                            title: isFollowing
+                                                                ? 'Unfollow'
+                                                                : 'Follow',
+                                                            icon: Icons
+                                                                .person_remove,
+                                                            onTap: () async {
+                                                              await followUser();
+                                                              if(!mounted) return;
+                                                              Navigator.pop(
+                                                                  context);
+                                                            }),
+                                                        Menu(
+                                                          title: 'Mute',
+                                                          icon:
+                                                              Icons.volume_off,
+                                                          onTap: () {
+                                                            print('Mute');
+                                                          },
+                                                        ),
+                                                        Menu(
+                                                          title: 'Block',
+                                                          icon: Icons.block,
+                                                          onTap: () {
+                                                            print('Block');
+                                                          },
+                                                        ),
+                                                      ]);
+                                                },
+                                                icon: const Icon(
+                                                  Icons.arrow_drop_down_rounded,
+                                                  color: primaryColor,
+                                                ),
+                                              )
+                                            : FollowButton(
+                                                backgroundColor:
+                                                    Colors.blueAccent,
+                                                borderColor: Colors.blueAccent,
+                                                text: 'Follow',
+                                                textColor: primaryColor,
+                                                onPressed: followUser,
+                                              ),
+                                        const SizedBox(width: 5),
+                                        FollowButton(
+                                          backgroundColor: Colors.grey.shade800,
+                                          borderColor: Colors.grey.shade800,
+                                          text: 'Message',
+                                          textColor: primaryColor,
+                                          onPressed: followUser,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                            const SizedBox(width: 5),
                             IconInButton(
-                              icon: Icons.more_horiz,
-                              onPressed: () {},
-                              backgroundColor: Colors.grey.shade800,
-                              borderColor: Colors.grey.shade800,
-                            ),
-                            // FollowButton(
-                            //   backgroundColor: Colors.grey,
-                            //   borderColor: Colors.grey,
-                            //   text: 'UnFollow',
-                            //   textColor: primaryColor,
-                            // )
+                                icon: const Icon(
+                                  Icons.person_add_outlined,
+                                  color: primaryColor,
+                                  size: 20,
+                                ),
+                                padding: const EdgeInsets.all(8),
+                                onPressed: () {},
+                                backgroundColor: Colors.grey.shade800,
+                                borderColor: mobileBackgroundColor),
                           ],
                         ),
                       )
@@ -263,5 +315,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ],
     );
+  }
+
+  followUser() async {
+    await FirestoreMethods()
+        .followUser(FirebaseAuth.instance.currentUser!.uid, widget.uid);
+
+    if (isFollowing) {
+      setState(() {
+        isFollowing = false;
+        followers--;
+      });
+    } else {
+      setState(() {
+        isFollowing = true;
+        followers++;
+      });
+    }
+  }
+
+  void getData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      var userSnap = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .get();
+      var postSnap = await FirebaseFirestore.instance
+          .collection('posts')
+          .where('uid', isEqualTo: widget.uid)
+          .get();
+
+      postLen = postSnap.docs.length;
+      postData = postSnap.docs;
+      following = userSnap.data()!['following'].length;
+      followers = userSnap.data()!['followers'].length;
+      userData = userSnap.data();
+      isFollowing = userSnap
+          .data()!['followers']
+          .contains(FirebaseAuth.instance.currentUser!.uid);
+      isMe = widget.uid == FirebaseAuth.instance.currentUser!.uid;
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:beco/models/menu.dart';
 import 'package:beco/models/user.dart';
 import 'package:beco/providers/user_provider.dart';
 import 'package:beco/resources/firestore_methods.dart';
@@ -96,26 +97,12 @@ class _PostCardState extends State<PostCard> {
                 ),
                 IconButton(
                   onPressed: () {
-                    showDialog(
+                    iconMenuModal(
                       context: context,
-                      builder: (context) => Dialog(
-                        child: ListView(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shrinkWrap: true,
-                          children: ['Delete']
-                              .map((e) => InkWell(
-                                  onTap: () async {
-                                    await FirestoreMethods()
-                                        .deletePost(widget.snapData['postId']);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 12, horizontal: 16),
-                                      child: Text(e))))
-                              .toList(),
-                        ),
-                      ),
+                      list: [
+                        Menu(title: 'Add to favorite', icon: Icons.star_border_rounded),
+                        Menu(title: 'Cancle follow', icon: Icons.person_remove),
+                      ],
                     );
                   },
                   icon: const Icon(Icons.more_vert),
@@ -277,7 +264,14 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CommentsScreen(
+                        postId: widget.snapData['postId'],
+                      ),
+                    ),
+                  ),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
