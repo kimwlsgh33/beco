@@ -2,6 +2,7 @@ import 'package:beco/models/user.dart';
 import 'package:beco/providers/user_provider.dart';
 import 'package:beco/resources/firestore_methods.dart';
 import 'package:beco/screens/comments_screen.dart';
+import 'package:beco/screens/profile_screen.dart';
 import 'package:beco/utils/colors.dart';
 import 'package:beco/utils/utils.dart';
 import 'package:beco/widgets/like_animation.dart';
@@ -59,10 +60,20 @@ class _PostCardState extends State<PostCard> {
                 .copyWith(right: 0),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundImage: NetworkImage(
-                    widget.snapData['profImage'],
+                InkWell(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfileScreen(
+                        uid: widget.snapData['uid'],
+                      ),
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundImage: NetworkImage(
+                      widget.snapData['profImage'],
+                    ),
                   ),
                 ),
                 Expanded(

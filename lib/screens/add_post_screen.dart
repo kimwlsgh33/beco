@@ -37,6 +37,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
         profImage,
       );
 
+      if(!mounted) return;
+
       if (res == "success") {
         setState(() {
           _isLoading = false;
@@ -99,6 +101,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   void clearImage() {
     setState(() {
+      _descriptionController.clear();
       _file = null;
     });
   }

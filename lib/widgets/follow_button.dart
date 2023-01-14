@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FollowButton extends StatelessWidget {
-  final Function()? function;
+  final Function()? onPressed;
   final Color backgroundColor;
   final Color borderColor;
   final String text;
@@ -13,14 +13,15 @@ class FollowButton extends StatelessWidget {
     required this.borderColor,
     required this.text,
     required this.textColor,
-    this.function,
+    this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
+      // TextButton : 로딩시 자동으로 disabledColor 적용
       child: TextButton(
-        onPressed: function,
+        onPressed: onPressed,
         style: TextButton.styleFrom(
           backgroundColor: backgroundColor,
           shape: RoundedRectangleBorder(
@@ -29,6 +30,7 @@ class FollowButton extends StatelessWidget {
           ),
         ),
         child: Container(
+          height: 22,
           alignment: Alignment.center,
           child: Text(
             text,
