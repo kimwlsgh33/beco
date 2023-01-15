@@ -3,6 +3,7 @@ import 'package:beco/responsive/mobile_screen_layout.dart';
 import 'package:beco/responsive/responsive_layout_screen.dart';
 import 'package:beco/responsive/web_screen_layout.dart';
 import 'package:beco/screens/login_screen.dart';
+import 'package:beco/tests/bloc/bloc_main.dart';
 import 'package:beco/utils/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:beco/widgets/kakao_rooms.dart';
@@ -27,7 +28,8 @@ void main() async {
   } else {
     await Firebase.initializeApp();
   }
-  runApp(const MyApp());
+  // runApp(const MyApp());
+  runApp(CounterApp());
 }
 
 class MyApp extends StatelessWidget {

@@ -15,27 +15,14 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   late PageController pageController;
 
   @override
-  void initState() {
-    super.initState();
-    pageController = PageController();
-  }
-
-  void navigationTapped(int page) {
-    pageController.jumpToPage(page);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
-          controller: pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: homeScreenItems,
-          onPageChanged: (int page) {
-            setState(() {
-              _page = page;
-            });
-          }),
+        controller: pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        onPageChanged: onPageChanged,
+        children: homeScreenItems,
+      ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(top: 8.0),
         child: CupertinoTabBar(
@@ -87,5 +74,23 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController();
+  }
+
+  void navigationTapped(int page) {
+    pageController.jumpToPage(page);
+    // pageController.animateToPage(page,
+    //     duration: const Duration(milliseconds: 300), curve: Curves.ease);
+  }
+
+  void onPageChanged(int page) {
+    setState(() {
+      _page = page;
+    });
   }
 }

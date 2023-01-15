@@ -5,6 +5,7 @@ import 'package:beco/resources/firestore_methods.dart';
 import 'package:beco/screens/comments_screen.dart';
 import 'package:beco/screens/profile_screen.dart';
 import 'package:beco/utils/colors.dart';
+import 'package:beco/utils/global_variables.dart';
 import 'package:beco/utils/utils.dart';
 import 'package:beco/widgets/like_animation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,31 +29,19 @@ class _PostCardState extends State<PostCard> {
   int commentLen = 0;
 
   @override
-  void initState() {
-    super.initState();
-    getComments();
-  }
-
-  getComments() async {
-    try {
-      QuerySnapshot snap = await FirebaseFirestore.instance
-          .collection('posts')
-          .doc(widget.snapData['postId'])
-          .collection('comments')
-          .get();
-
-      commentLen = snap.docs.length;
-    } catch (e) {
-      showSnackBar(context, e.toString());
-    }
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
+    final width = MediaQuery.of(context).size.width;
+
     return Container(
-      color: mobileBackgroundColor,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: width > webScreenSize
+              ? secondaryColor
+              : mobileBackgroundColor,
+        ),
+        color: mobileBackgroundColor,
+      ),
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
@@ -100,7 +89,9 @@ class _PostCardState extends State<PostCard> {
                     iconMenuModal(
                       context: context,
                       list: [
-                        Menu(title: 'Add to favorite', icon: Icons.star_border_rounded),
+                        Menu(
+                            title: 'Add to favorite',
+                            icon: Icons.star_border_rounded),
                         Menu(title: 'Cancle follow', icon: Icons.person_remove),
                       ],
                     );
@@ -304,5 +295,26 @@ class _PostCardState extends State<PostCard> {
         ],
       ),
     );
+  }
+
+  getComments() async {
+    try {
+      QuerySnapshot snap = await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(widget.snapData['postId'])
+          .collection('comments')
+          .get();
+
+      commentLen = snap.docs.length;
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getComments();
   }
 }

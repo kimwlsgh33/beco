@@ -192,7 +192,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                 .person_remove,
                                                             onTap: () async {
                                                               await followUser();
-                                                              if(!mounted) return;
                                                               Navigator.pop(
                                                                   context);
                                                             }),

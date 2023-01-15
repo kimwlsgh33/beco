@@ -10,9 +10,9 @@ const webScreenSize = 600;
 
 // 글로벌변수로, 화면을 지정
 List<Widget> homeScreenItems = [
+  const NotiScreen(),
   const FeedScreen(),
   const SearchScreen(),
   const AddPostScreen(),
-  const NotiScreen(),
   ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid),
 ];

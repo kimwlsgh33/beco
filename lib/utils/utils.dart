@@ -31,6 +31,7 @@ iconMenuModal({
 }) {
   return showModalBottomSheet(
     backgroundColor: Colors.grey.shade800,
+    clipBehavior: Clip.hardEdge,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(20),

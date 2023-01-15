@@ -4,6 +4,7 @@ import 'package:beco/responsive/responsive_layout_screen.dart';
 import 'package:beco/responsive/web_screen_layout.dart';
 import 'package:beco/screens/signup_screen.dart';
 import 'package:beco/utils/colors.dart';
+import 'package:beco/utils/global_variables.dart';
 import 'package:beco/utils/utils.dart';
 import 'package:beco/widgets/text_field_input.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginUser() async {
-
     setState(() {
       _isLoading = true;
     });
@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     // mounted는 위젯이 현재 트리에 있는지 확인
-    if(!mounted) return;
+    if (!mounted) return;
 
     if (res == "success") {
       Navigator.pushReplacement(
@@ -67,8 +67,10 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         // 안전 영역 ( 상태바, 하단바 )
         child: Container(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 20), // container padding
+          padding: MediaQuery.of(context).size.width > webScreenSize
+              ? EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width / 3)
+              : const EdgeInsets.symmetric(horizontal: 20.0),
           width: double.infinity, // 가로 길이를 최대로
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
