@@ -50,7 +50,7 @@ class Post {
       uid: data['uid'],
       username: data['username'],
       postId: data['postId'],
-      datePublished: data['datePublished'],
+      datePublished: data['datePublished'].toDate(),
       postUrl: data['postUrl'],
       profImage: data['profImage'],
       likes: data['likes'],

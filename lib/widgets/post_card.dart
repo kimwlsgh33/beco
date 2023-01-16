@@ -14,10 +14,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PostCard extends StatefulWidget {
-  final snapData;
+  final postData;
   const PostCard({
     super.key,
-    this.snapData,
+    this.postData,
   });
 
   @override
@@ -55,14 +55,14 @@ class _PostCardState extends State<PostCard> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ProfileScreen(
-                        uid: widget.snapData['uid'],
+                        uid: widget.postData.uid,
                       ),
                     ),
                   ),
                   child: CircleAvatar(
                     radius: 16,
                     backgroundImage: NetworkImage(
-                      widget.snapData['profImage'],
+                      widget.postData.profImage,
                     ),
                   ),
                 ),
@@ -74,7 +74,7 @@ class _PostCardState extends State<PostCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.snapData['username'],
+                          widget.postData.username,
                           style: const TextStyle(
                             color: primaryColor,
                             fontWeight: FontWeight.bold,
@@ -107,8 +107,8 @@ class _PostCardState extends State<PostCard> {
             onDoubleTap: () async {
               await FirestoreMethods().likePost(
                 uid: user.uid,
-                postId: widget.snapData['postId'],
-                likes: widget.snapData['likes'],
+                postId: widget.postData.postId,
+                likes: widget.postData.likes,
               );
               setState(() {
                 isLikeAnimating = true;
@@ -126,7 +126,7 @@ class _PostCardState extends State<PostCard> {
                   height: MediaQuery.of(context).size.height * 0.35,
                   width: double.infinity,
                   child: Image.network(
-                    widget.snapData['postUrl'],
+                    widget.postData.postUrl,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -162,18 +162,18 @@ class _PostCardState extends State<PostCard> {
             children: [
               LikeAnimation(
                 // if user liked the post, show red heart
-                isAnimating: widget.snapData['likes'].contains(user.uid),
+                isAnimating: widget.postData.likes.contains(user.uid),
                 smallLike: true, // small heart
                 child: IconButton(
                   onPressed: () async {
                     // 작은 하트를 누르면 좋아요를 추가하거나 삭제함
                     await FirestoreMethods().likePost(
-                      postId: widget.snapData['postId'],
+                      postId: widget.postData.postId,
                       uid: user.uid,
-                      likes: widget.snapData['likes'],
+                      likes: widget.postData.likes,
                     );
                   },
-                  icon: widget.snapData['likes'].contains(user.uid)
+                  icon: widget.postData.likes.contains(user.uid)
                       ? const Icon(
                           Icons.favorite,
                           color: Colors.red,
@@ -189,7 +189,7 @@ class _PostCardState extends State<PostCard> {
                   // MaterialPageRoute를 사용하여 CommentsScreen으로 이동
                   MaterialPageRoute(
                     builder: (context) => CommentsScreen(
-                      postId: widget.snapData['postId'],
+                      postId: widget.postData.postId,
                     ),
                   ),
                 ),
@@ -222,7 +222,7 @@ class _PostCardState extends State<PostCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // DefaultTextStyle : https://api.flutter.dev/flutter/painting/DefaultTextStyle-class.html
-                widget.snapData['likes'].length == 0
+                widget.postData.likes.length == 0
                     ? Container()
                     : DefaultTextStyle(
                         style: Theme.of(context)
@@ -230,9 +230,9 @@ class _PostCardState extends State<PostCard> {
                             .subtitle2!
                             .copyWith(fontWeight: FontWeight.w800),
                         child: Text(
-                          widget.snapData['likes'].length == 1
-                              ? '${widget.snapData['likes'].length} like'
-                              : '${widget.snapData['likes'].length} likes',
+                          widget.postData.likes.length == 1
+                              ? '${widget.postData.likes.length} like'
+                              : '${widget.postData.likes.length} likes',
                           style: Theme.of(context).textTheme.bodyText2,
                         ),
                       ),
@@ -244,11 +244,11 @@ class _PostCardState extends State<PostCard> {
                       style: const TextStyle(color: primaryColor),
                       children: [
                         TextSpan(
-                          text: widget.snapData['username'],
+                          text: widget.postData.username,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         TextSpan(
-                          text: ' ${widget.snapData['description']}',
+                          text: ' ${widget.postData.description}',
                         ),
                       ],
                     ),
@@ -259,7 +259,7 @@ class _PostCardState extends State<PostCard> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => CommentsScreen(
-                        postId: widget.snapData['postId'],
+                        postId: widget.postData.postId,
                       ),
                     ),
                   ),
@@ -281,7 +281,7 @@ class _PostCardState extends State<PostCard> {
                     // format timestamp to date
                     // DateFormat('dd MMM yyyy').format(
                     DateFormat.yMMMd().format(
-                      widget.snapData['datePublished'].toDate(),
+                      widget.postData.datePublished,
                     ),
                     style: const TextStyle(
                       fontSize: 16,
@@ -301,7 +301,7 @@ class _PostCardState extends State<PostCard> {
     try {
       QuerySnapshot snap = await FirebaseFirestore.instance
           .collection('posts')
-          .doc(widget.snapData['postId'])
+          .doc(widget.postData.postId)
           .collection('comments')
           .get();
 

@@ -1,3 +1,4 @@
+import 'package:beco/cubits/auth_cubit.dart';
 import 'package:beco/providers/user_provider.dart';
 import 'package:beco/utils/global_variables.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,8 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   @override
   void initState() {
     super.initState();
-    addData();
+    // addData();
+
   }
 
   addData() async {
@@ -33,6 +35,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<AuthCubit>().fetchUser();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         if (constraints.maxWidth > webScreenSize) {

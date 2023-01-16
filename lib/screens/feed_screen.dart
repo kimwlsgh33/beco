@@ -1,17 +1,27 @@
+import 'package:beco/cubits/feed_cubit.dart';
+import 'package:beco/models/post.dart';
 import 'package:beco/utils/colors.dart';
 import 'package:beco/utils/global_variables.dart';
 import 'package:beco/widgets/post_card.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class FeedScreen extends StatelessWidget {
-  const FeedScreen({super.key});
+class FeedScreen extends StatefulWidget {
+  @override
+  State<FeedScreen> createState() => _FeedScreenState();
+}
+
+class _FeedScreenState extends State<FeedScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<FeedCubit>().fetchPosts();
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor:
           width > webScreenSize ? webBackgroundColor : mobileBackgroundColor,
@@ -33,27 +43,23 @@ class FeedScreen extends StatelessWidget {
                     ),
                   )
                 ]),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('posts').snapshots(),
-        // initialData: initialData,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (BuildContext context, int index) => Container(
-              margin: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: width > webScreenSize ? MediaQuery.of(context).size.width * 0.2 : 0,
-              ),
-              child: PostCard(
-                // 게시글 정보를 PostCard에 전달
-                snapData: snapshot.data!.docs[index].data(),
-              ),
+      body: BlocBuilder<FeedCubit, List<Post>>(
+        builder: (context, posts) => ListView.builder(
+          itemCount: posts.length,
+          itemBuilder: (BuildContext context, int index) => Container(
+            margin: EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: width > webScreenSize
+                  ? MediaQuery.of(context).size.width * 0.2
+                  : 0,
             ),
-          );
-        },
+            child: 
+            PostCard(
+              // 게시글 정보를 PostCard에 전달
+              postData: posts[index],
+            ),
+          ),
+        ),
       ),
     );
   }

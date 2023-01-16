@@ -1,15 +1,18 @@
+import 'package:beco/cubits/auth_cubit.dart';
+import 'package:beco/cubits/feed_cubit.dart';
 import 'package:beco/providers/user_provider.dart';
 import 'package:beco/responsive/mobile_screen_layout.dart';
 import 'package:beco/responsive/responsive_layout_screen.dart';
 import 'package:beco/responsive/web_screen_layout.dart';
 import 'package:beco/screens/login_screen.dart';
-import 'package:beco/tests/bloc/bloc_main.dart';
+// import 'package:beco/tests/bloc/bloc_main.dart';
 import 'package:beco/utils/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:beco/widgets/kakao_rooms.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -28,8 +31,8 @@ void main() async {
   } else {
     await Firebase.initializeApp();
   }
-  // runApp(const MyApp());
-  runApp(CounterApp());
+  runApp(const MyApp());
+  // runApp(CounterApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -39,11 +42,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // MultiProvider : 여러개의 Provider를 한번에 사용할 수 있게 해줌
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
         // ChangeNotifierProvider : 상태를 관리하는 클래스, create : 생성자
-        ChangeNotifierProvider(
-          create: (_) => UserProvider(),
+        // ChangeNotifierProvider(
+        //   create: (_) => UserProvider(),
+        // ),
+        BlocProvider<FeedCubit>(
+          create: (context) => FeedCubit(),
+        ),
+        BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(),
         ),
       ],
       child: MaterialApp(
