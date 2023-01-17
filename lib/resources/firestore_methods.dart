@@ -1,8 +1,10 @@
+import 'package:beco/models/pomodoro.dart';
 import 'package:beco/models/post.dart';
+import 'package:beco/models/wallet.dart';
 import 'package:beco/resources/storage_method.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class FirestoreMethods {
@@ -140,5 +142,73 @@ class FirestoreMethods {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<String> addWallet(Wallet wallet) async {
+    String res = "Something went wrong";
+    try {
+      String walletId = Uuid().v1();
+      await _firestore
+          .collection("users")
+          .doc(wallet.uid)
+          .collection("wallets")
+          .doc(walletId)
+          .set(
+            wallet.toJson(),
+          );
+
+      res = "success";
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
+  }
+
+  Future<List<Wallet>> getWallets() async {
+    List<Wallet> wallets = [];
+    try {
+      var snap = await _firestore
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection("wallets")
+          .get();
+
+      for (var doc in snap.docs) {
+        wallets.add(Wallet.fromJson(doc.data()));
+      }
+
+      // await _firestore.collection('users').doc(uid).update({
+      //   'wallet': FieldValue.arrayUnion([currency])
+      // });
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return wallets;
+  }
+
+  Future<String> initPomodoro(
+    String uid,
+  ) async {
+    String res = "Something went wrong";
+    try {
+      String pomodoroId = Uuid().v1();
+      Pomodoro pomodoro = Pomodoro(
+        pomodoroId: pomodoroId,
+        uid: uid,
+        focusTime: 1500,
+        breakTime: 900,
+        totalPomodoros: 0,
+        totalSeconds: 0,
+      );
+      // set vs update : set은 전체를 덮어쓰고, update는 일부만 업데이트
+      await _firestore.collection("pomodoros").doc(pomodoroId).set(
+            pomodoro.toJson(),
+          );
+      res = "success";
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
   }
 }

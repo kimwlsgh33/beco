@@ -68,7 +68,7 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
         controller: pageController,
         onPageChanged: onPageChanged,
         physics: const NeverScrollableScrollPhysics(),
-        children: homeScreenItems,
+        children: homeScreenItems(context),
       ),
     );
   }

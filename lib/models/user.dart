@@ -8,6 +8,8 @@ class User {
   final String photoUrl;
   final List followers;
   final List following;
+  final int focusTime;
+  final int restTime;
 
   const User({
     required this.email,
@@ -17,6 +19,8 @@ class User {
     required this.photoUrl,
     required this.followers,
     required this.following,
+    required this.focusTime,
+    required this.restTime,
   });
 
   // convert json to User ( for api )
@@ -27,7 +31,9 @@ class User {
         bio = json['bio'],
         photoUrl = json['photoUrl'],
         followers = json['followers'],
-        following = json['following'];
+        following = json['following'],
+        focusTime = json['focusTime'],
+        restTime = json['restTime'];
 
   // convert User to json ( for firebase )
   Map<String, dynamic> toJson() => {
@@ -38,6 +44,8 @@ class User {
         'photoUrl': photoUrl,
         'followers': followers,
         'following': following,
+        'focusTime': focusTime,
+        'restTime': restTime,
       };
 
   // convert DocumentSnapshot to User ( for firebase )
@@ -52,27 +60,10 @@ class User {
       photoUrl: data['photoUrl'],
       followers: data['followers'],
       following: data['following'],
+      focusTime: data['focusTime'],
+      restTime: data['restTime'],
     );
   }
 
   // copyWith is a method that returns a new instance of the User class
-  User copyWith({
-    String? email,
-    String? uid,
-    String? username,
-    String? bio,
-    String? photoUrl,
-    List? followers,
-    List? following,
-  }) {
-    return User(
-      email: email ?? this.email,
-      uid: uid ?? this.uid,
-      username: username ?? this.username,
-      bio: bio ?? this.bio,
-      photoUrl: photoUrl ?? this.photoUrl,
-      followers: followers ?? this.followers,
-      following: following ?? this.following,
-    );
-  }
 }

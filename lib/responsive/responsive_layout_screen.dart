@@ -1,8 +1,5 @@
-import 'package:beco/cubits/auth_cubit.dart';
-import 'package:beco/providers/user_provider.dart';
 import 'package:beco/utils/global_variables.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ResponsiveLayout extends StatefulWidget {
   final Widget webScreen;
@@ -20,22 +17,7 @@ class ResponsiveLayout extends StatefulWidget {
 
 class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   @override
-  void initState() {
-    super.initState();
-    // addData();
-
-  }
-
-  addData() async {
-    // Provider.of(context) : context를 통해 Provider를 가져옴
-    UserProvider userProvider = Provider.of(context, listen: false);
-    // 저장된 유저 정보를 가져오는 메소드
-    await userProvider.refreshUser();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    context.read<AuthCubit>().fetchUser();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         if (constraints.maxWidth > webScreenSize) {

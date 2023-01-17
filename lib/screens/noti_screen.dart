@@ -7,9 +7,12 @@ class NotiScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF282A31),
       body: SafeArea(
-        child: Card(
-          child: testWrap(),
+        child: SingleChildScrollView(
+          child: Center(
+            child: testButtons(context)
+          ),
         ),
       ),
     );

@@ -71,6 +71,8 @@ class AuthMethod {
           photoUrl: photoUrl,
           followers: [],
           following: [],
+          focusTime: 1500,
+          restTime: 600,
         );
 
         // add user to firestore

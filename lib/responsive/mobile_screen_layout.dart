@@ -21,14 +21,17 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         controller: pageController,
         physics: const NeverScrollableScrollPhysics(),
         onPageChanged: onPageChanged,
-        children: homeScreenItems,
+        children: homeScreenItems(context),
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(top: 8.0),
+        decoration: const BoxDecoration(
+          color: kakaoBackgroundColor,
+        ),
         child: CupertinoTabBar(
           onTap: navigationTapped,
           // mobileBackgroundColor : flutter에서 제공하는 색상
-          backgroundColor: mobileBackgroundColor,
+          backgroundColor: kakaoBackgroundColor,
           items: [
             BottomNavigationBarItem(
               icon: Icon(

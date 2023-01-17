@@ -1,3 +1,5 @@
+import 'package:beco/models/menu.dart';
+import 'package:beco/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 Widget testIntrinsicHeight() {
@@ -29,8 +31,7 @@ Widget testIntrinsicHeight() {
   ));
 }
 
-  
-Widget testWrap(){
+Widget testWrap() {
   // Wrap을 사용하면 자식들이 부모의 크기를 넘어가면 다음줄로 넘어간다.
   return SizedBox(
     width: double.infinity, // Wrap의 가로크기를 부모의 가로크기로 맞춘다.
@@ -40,19 +41,23 @@ Widget testWrap(){
       alignment: WrapAlignment.center,
       children: <Widget>[
         Chip(
-          avatar: CircleAvatar(backgroundColor: Colors.blue.shade900, child: const Text('AH')),
+          avatar: CircleAvatar(
+              backgroundColor: Colors.blue.shade900, child: const Text('AH')),
           label: const Text('Hamilton'),
         ),
         Chip(
-          avatar: CircleAvatar(backgroundColor: Colors.blue.shade900, child: const Text('ML')),
+          avatar: CircleAvatar(
+              backgroundColor: Colors.blue.shade900, child: const Text('ML')),
           label: const Text('Lafayette'),
         ),
         Chip(
-          avatar: CircleAvatar(backgroundColor: Colors.blue.shade900, child: const Text('HM')),
+          avatar: CircleAvatar(
+              backgroundColor: Colors.blue.shade900, child: const Text('HM')),
           label: const Text('Mulligan'),
         ),
         Chip(
-          avatar: CircleAvatar(backgroundColor: Colors.blue.shade900, child: const Text('JL')),
+          avatar: CircleAvatar(
+              backgroundColor: Colors.blue.shade900, child: const Text('JL')),
           label: const Text('Laurens'),
         ),
       ],
@@ -60,3 +65,137 @@ Widget testWrap(){
   );
 }
 
+Widget testButtons(BuildContext context) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisSize: MainAxisSize.min,
+    children: <Widget>[
+      TextButton(
+        onPressed: () {
+          iconMenuModal(
+            context: context,
+            list: [
+              Menu(title: '카카오뱅크', icon: Icons.account_balance),
+              Menu(title: '토스뱅크', icon: Icons.account_balance),
+            ],
+          );
+        },
+        child: const Text('TextButton'),
+      ),
+      const SizedBox(height: 30),
+      ElevatedButton(
+        onPressed: () {},
+        child: const Text('ElevatedButton'),
+      ),
+      const SizedBox(height: 30),
+      OutlinedButton(
+        onPressed: () {},
+        child: const Text('OutlinedButton'),
+      ),
+      const SizedBox(height: 30),
+      TextButton.icon(
+        onPressed: () {},
+        icon: const Icon(Icons.add),
+        label: const Text('TextButton.icon'),
+      ),
+      const SizedBox(height: 30),
+      ElevatedButton.icon(
+        onPressed: () {},
+        icon: const Icon(Icons.add),
+        label: const Text('ElevatedButton.icon'),
+      ),
+      const SizedBox(height: 30),
+      OutlinedButton.icon(
+        onPressed: () {},
+        icon: const Icon(Icons.add),
+        label: const Text('OutlinedButton.icon'),
+      ),
+      const SizedBox(height: 30),
+      ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          shape: const BeveledRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7))),
+        ),
+        child: const Text('ElevatedButton (shape)'),
+      ),
+      const SizedBox(height: 30),
+      ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          shape: const StadiumBorder(),
+        ),
+        child: const Text('ElevatedButton (shape)'),
+      ),
+      const SizedBox(height: 30),
+      ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          shape: const CircleBorder(),
+        ),
+        child: const Text('ElevatedButton (shape)'),
+      ),
+      const SizedBox(height: 30),
+      IconButton(
+        onPressed: () {},
+        icon: const Icon(Icons.add),
+      ),
+      const SizedBox(height: 30),
+      PopupMenuButton(
+        itemBuilder: (context) {
+          return const [
+            PopupMenuItem(child: Text('item1')),
+            PopupMenuItem(child: Text('item2')),
+            PopupMenuItem(child: Text('item3')),
+          ];
+        },
+      ),
+      const SizedBox(height: 30),
+      BackButton(),
+      const SizedBox(height: 30),
+      CloseButton(),
+      const SizedBox(height: 30),
+      FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
+      const SizedBox(height: 30),
+      FloatingActionButton.extended(
+        onPressed: () {},
+        label: const Text('label'),
+        icon: const Icon(Icons.add),
+      ),
+      const SizedBox(height: 30),
+      FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+        mini: true,
+      ),
+      const SizedBox(height: 30),
+      MaterialButton(
+        onPressed: () {},
+        child: const Text('MaterialButton'),
+      ),
+      const SizedBox(height: 30),
+      MaterialButton(
+        onPressed: () {},
+        child: const Text('MaterialButton'),
+        shape: const StadiumBorder(),
+      ),
+      const SizedBox(height: 30),
+      MaterialButton(
+        onPressed: () {},
+        child: const Text('MaterialButton'),
+        shape: const CircleBorder(),
+      ),
+      const SizedBox(height: 30),
+      MaterialButton(
+        onPressed: () {},
+        child: const Text('MaterialButton'),
+        shape: const BeveledRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(7))),
+      ),
+      const SizedBox(height: 30),
+    ],
+  );
+}

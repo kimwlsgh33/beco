@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class Menu {
   final String title;
-  final IconData icon;
+  final String? subTitle;
+  final IconData? icon;
   final Function()? onTap;
 
   Menu({
     required this.title,
-    required this.icon,
+    this.icon,
+    this.subTitle,
     this.onTap,
   });
 }
