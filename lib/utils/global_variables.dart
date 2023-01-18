@@ -1,24 +1,17 @@
-import 'package:beco/cubits/auth_cubit.dart';
-import 'package:beco/screens/admins/main_admin.dart';
-import 'package:beco/screens/noti_screen.dart';
-import 'package:beco/screens/pomodoro_screen.dart';
-import 'package:beco/screens/kakao_screen.dart';
+import 'package:beco/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 const webScreenSize = 600;
-
-// 글로벌변수로, 화면을 지정
-List<Widget> homeScreenItems(BuildContext context) => [
-      PomodoroScreen(
-        context.read<AuthCubit>().state.focusTime,
-      ),
-      MainAdmin(),
-      TossScreen(),
-      // FeedScreen(),
-      // const SearchScreen(),
-      // const AddPostScreen(),
-      // ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid),
-      Container(),
-      Container(),
-    ];
+//==================================================
+final darkTheme = ThemeData.dark().copyWith(
+  scaffoldBackgroundColor: mobileBackgroundColor,
+  backgroundColor: kakaoBackgroundColor,
+  primaryColor: Colors.white.withOpacity(0.5),
+);
+//==================================================
+final logo = SvgPicture.asset(
+  'assets/ic_instagram.svg',
+  color: primaryColor,
+  height: 32,
+);

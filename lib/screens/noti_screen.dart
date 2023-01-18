@@ -1,4 +1,3 @@
-import 'package:beco/tests/test_widgets.dart';
 import 'package:flutter/material.dart';
 
 class NotiScreen extends StatelessWidget {
@@ -11,7 +10,8 @@ class NotiScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
-            child: testButtons(context)
+            // child: testButtons(context)
+            child: Container(),
           ),
         ),
       ),

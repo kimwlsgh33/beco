@@ -1,5 +1,4 @@
-import 'package:beco/utils/colors.dart';
-import 'package:beco/utils/global_variables.dart';
+import 'package:beco/utils/nav_screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,55 +24,14 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(top: 8.0),
-        decoration: const BoxDecoration(
-          color: kakaoBackgroundColor,
+        decoration: BoxDecoration(
+          color: Theme.of(context).backgroundColor,
         ),
         child: CupertinoTabBar(
           onTap: navigationTapped,
           // mobileBackgroundColor : flutter에서 제공하는 색상
-          backgroundColor: kakaoBackgroundColor,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                color: _page == 0 ? primaryColor : secondaryColor,
-              ),
-              label: '',
-              backgroundColor: primaryColor,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.search,
-                color: _page == 1 ? primaryColor : secondaryColor,
-              ),
-              label: '',
-              backgroundColor: primaryColor,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.add_circle_outline_rounded,
-                color: _page == 2 ? primaryColor : secondaryColor,
-              ),
-              label: '',
-              backgroundColor: primaryColor,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.favorite,
-                color: _page == 3 ? primaryColor : secondaryColor,
-              ),
-              label: '',
-              backgroundColor: primaryColor,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-                color: _page == 4 ? primaryColor : secondaryColor,
-              ),
-              label: '',
-              backgroundColor: primaryColor,
-            ),
-          ],
+          backgroundColor: Theme.of(context).backgroundColor,
+          items: mobileNavBarItems(_page)
         ),
       ),
     );
@@ -86,9 +44,9 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   }
 
   void navigationTapped(int page) {
-    pageController.jumpToPage(page);
-    // pageController.animateToPage(page,
-    //     duration: const Duration(milliseconds: 300), curve: Curves.ease);
+    // pageController.jumpToPage(page);
+    pageController.animateToPage(page,
+        duration: const Duration(milliseconds: 300), curve: Curves.ease);
   }
 
   void onPageChanged(int page) {

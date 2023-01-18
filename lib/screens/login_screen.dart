@@ -1,4 +1,4 @@
-import 'package:beco/resources/auth_method.dart';
+import 'package:beco/resources/auth_methods.dart';
 import 'package:beco/responsive/mobile_screen_layout.dart';
 import 'package:beco/responsive/responsive_layout_screen.dart';
 import 'package:beco/responsive/web_screen_layout.dart';

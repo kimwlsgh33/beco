@@ -1,12 +1,12 @@
+import 'package:beco/cubits/auth_cubit.dart';
 import 'package:beco/models/user.dart';
-import 'package:beco/providers/user_provider.dart';
 import 'package:beco/resources/firestore_methods.dart';
 import 'package:beco/utils/colors.dart';
 import 'package:beco/utils/utils.dart';
 import 'package:beco/widgets/comment_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CommentsScreen extends StatefulWidget {
   final String postId;
@@ -45,7 +45,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
@@ -90,45 +89,47 @@ class _CommentsScreenState extends State<CommentsScreen> {
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           padding: const EdgeInsets.only(left: 16, right: 8),
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(user.photoUrl),
-                radius: 18,
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 8.0),
-                  child: TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(
-                      hintText: 'Comment as ${user.username}',
-                      hintStyle: TextStyle(
-                        color: primaryColor.withOpacity(0.5),
+          child: BlocBuilder<AuthCubit, User>(builder: (context, user) {
+            return Row(
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(user.photoUrl),
+                  radius: 18,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 8.0),
+                    child: TextField(
+                      controller: _commentController,
+                      decoration: InputDecoration(
+                        hintText: 'Comment as ${user.username}',
+                        hintStyle: TextStyle(
+                          color: primaryColor.withOpacity(0.5),
+                        ),
+                        border: InputBorder.none,
                       ),
-                      border: InputBorder.none,
                     ),
                   ),
                 ),
-              ),
-              InkWell(
-                onTap: () => addComment(user),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: const Text(
-                    'Post',
-                    style: TextStyle(
-                      color: blueColor,
-                      fontWeight: FontWeight.bold,
+                InkWell(
+                  onTap: () => addComment(user),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: const Text(
+                      'Post',
+                      style: TextStyle(
+                        color: blueColor,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            );
+          }),
         ),
       ),
     );

@@ -60,10 +60,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 context: context,
                                 list: [
                                   Menu(
-                                    title: 'Report',
-                                    icon: Icons.report,
+                                    title: 'Sign Out',
+                                    icon: Icons.logout,
                                     onTap: () {
-                                      print('Report');
+                                      FirebaseAuth.instance.signOut();
+                                      Navigator.pop(context);
                                     },
                                   ),
                                   Menu(

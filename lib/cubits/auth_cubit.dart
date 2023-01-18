@@ -1,5 +1,5 @@
 import 'package:beco/models/user.dart' as model;
-import 'package:beco/resources/auth_method.dart';
+import 'package:beco/resources/auth_methods.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthCubit extends Cubit<model.User> {
@@ -25,4 +25,12 @@ class AuthCubit extends Cubit<model.User> {
     final model.User user = await _authMethods.getCurrentUser();
     emit(user);
   }
+
+  @override
+  void onChange(Change<model.User> change) {
+    print('onChange -- ${change.runtimeType} $change');
+    super.onChange(change);
+  }
 }
+
+

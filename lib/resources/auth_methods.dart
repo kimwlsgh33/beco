@@ -1,5 +1,6 @@
 import 'package:beco/models/user.dart' as model;
-import 'package:beco/resources/storage_method.dart';
+import 'package:beco/resources/pomo_methods.dart';
+import 'package:beco/resources/storage_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,8 @@ class AuthMethod {
     // getCurrentUser() async {
     // firebase_auth 에서 현재 로그인된 유저 정보를 가져옴
     User firebaseUser = _auth.currentUser!;
+
+    // print('uid: ${firebaseUser.uid}');
 
     // firestore에 저장된 유저의 정보를 가져옴
     DocumentSnapshot snap =
@@ -94,6 +97,7 @@ class AuthMethod {
         //   "followers": [],
         //   "following": [],
         // });
+        await PomoMethods().initPomodoro(firebaseUser.uid);
 
         res = "success";
       } else {
@@ -152,5 +156,4 @@ class AuthMethod {
   Future<void> logoutUser() async {
     await _auth.signOut();
   }
-
 }

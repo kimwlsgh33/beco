@@ -3,6 +3,7 @@ import 'package:beco/cubits/wallet_cubit.dart';
 import 'package:beco/models/menu.dart';
 import 'package:beco/models/user.dart';
 import 'package:beco/models/wallet.dart';
+import 'package:beco/resources/firestore_methods.dart';
 import 'package:beco/utils/colors.dart';
 import 'package:beco/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -134,7 +135,7 @@ class _TossScreenState extends State<TossScreen> {
                 builder: (context, wallets) {
                   return ListView.builder(
                     shrinkWrap: true,
-                    // physics: const NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: wallets.length,
                     itemBuilder: (context, index) {
                       return Container(
@@ -243,6 +244,18 @@ class _TossScreenState extends State<TossScreen> {
                             Menu(
                               title: '카카오뱅크',
                               icon: Icons.account_balance,
+                              onTap: () async {
+                                String res = await FirestoreMethods().addWallet(
+                                    context.read<AuthCubit>().state.uid);
+
+                                if (res != 'success') {
+                                  showSnackBar(context, res);
+                                }
+
+                                context.read<WalletCubit>().refreshWallet();
+
+                                return Navigator.pop(context);
+                              },
                             ),
                             Menu(
                               title: '토스뱅크',

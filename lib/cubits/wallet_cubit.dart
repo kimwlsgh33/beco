@@ -25,18 +25,6 @@ class WalletCubit extends Cubit<List<Wallet>> {
     emit(result);
   }
 
-  String addWallet(Wallet wallet) {
-    List<Wallet> result = state;
-    for (Wallet w in result) {
-      if (w.currency == wallet.currency) {
-        return 'already exists';
-      }
-    }
-    FirestoreMethods().addWallet(wallet);
-    result.add(wallet);
-    emit(result);
-    return 'success';
-  }
 
   void refreshWallet() async {
     List<Wallet> result = await FirestoreMethods().getWallets();

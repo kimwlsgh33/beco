@@ -1,6 +1,6 @@
+import 'package:beco/cubits/auth_cubit.dart';
 import 'package:beco/models/menu.dart';
 import 'package:beco/models/user.dart';
-import 'package:beco/providers/user_provider.dart';
 import 'package:beco/resources/firestore_methods.dart';
 import 'package:beco/screens/comments_screen.dart';
 import 'package:beco/screens/profile_screen.dart';
@@ -10,8 +10,8 @@ import 'package:beco/utils/utils.dart';
 import 'package:beco/widgets/like_animation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class PostCard extends StatefulWidget {
   final postData;
@@ -30,15 +30,12 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of<UserProvider>(context).getUser;
     final width = MediaQuery.of(context).size.width;
 
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: width > webScreenSize
-              ? secondaryColor
-              : mobileBackgroundColor,
+          color: width > webScreenSize ? secondaryColor : mobileBackgroundColor,
         ),
         color: mobileBackgroundColor,
       ),
@@ -103,87 +100,91 @@ class _PostCardState extends State<PostCard> {
 
             // IMAGE SECTION
           ),
-          GestureDetector(
-            onDoubleTap: () async {
-              await FirestoreMethods().likePost(
-                uid: user.uid,
-                postId: widget.postData.postId,
-                likes: widget.postData.likes,
-              );
-              setState(() {
-                isLikeAnimating = true;
-              });
-              Future.delayed(const Duration(milliseconds: 500), () {
+          BlocBuilder<AuthCubit, User>(builder: (context, user) {
+            return GestureDetector(
+              onDoubleTap: () async {
+                await FirestoreMethods().likePost(
+                  uid: user.uid,
+                  postId: widget.postData.postId,
+                  likes: widget.postData.likes,
+                );
                 setState(() {
-                  isLikeAnimating = false;
+                  isLikeAnimating = true;
                 });
-              });
-            },
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.35,
-                  width: double.infinity,
-                  child: Image.network(
-                    widget.postData.postUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                // 투명도를 조절하여 좋아요 애니메이션을 보여줌
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  // isLikeAnimating이 true일 때만 애니메이션을 보여줌 ( 투명도 1 )
-                  opacity: isLikeAnimating ? 1 : 0,
-                  child: LikeAnimation(
-                    isAnimating: isLikeAnimating,
-                    duration: const Duration(
-                      milliseconds: 400,
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  setState(() {
+                    isLikeAnimating = false;
+                  });
+                });
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    width: double.infinity,
+                    child: Image.network(
+                      widget.postData.postUrl,
+                      fit: BoxFit.cover,
                     ),
-                    child: const Icon(
-                      Icons.favorite,
-                      color: Colors.white,
-                      size: 120,
-                    ),
-                    onEnd: () {
-                      // animation이 끝나면 isLikeAnimating을 false로 변경
-                      setState(() {
-                        isLikeAnimating = false;
-                      });
-                    },
                   ),
-                ),
-              ],
-            ),
-          ),
+                  // 투명도를 조절하여 좋아요 애니메이션을 보여줌
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    // isLikeAnimating이 true일 때만 애니메이션을 보여줌 ( 투명도 1 )
+                    opacity: isLikeAnimating ? 1 : 0,
+                    child: LikeAnimation(
+                      isAnimating: isLikeAnimating,
+                      duration: const Duration(
+                        milliseconds: 400,
+                      ),
+                      child: const Icon(
+                        Icons.favorite,
+                        color: Colors.white,
+                        size: 120,
+                      ),
+                      onEnd: () {
+                        // animation이 끝나면 isLikeAnimating을 false로 변경
+                        setState(() {
+                          isLikeAnimating = false;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
 
           // BUTTONS SECTION
           Row(
             children: [
-              LikeAnimation(
-                // if user liked the post, show red heart
-                isAnimating: widget.postData.likes.contains(user.uid),
-                smallLike: true, // small heart
-                child: IconButton(
-                  onPressed: () async {
-                    // 작은 하트를 누르면 좋아요를 추가하거나 삭제함
-                    await FirestoreMethods().likePost(
-                      postId: widget.postData.postId,
-                      uid: user.uid,
-                      likes: widget.postData.likes,
-                    );
-                  },
-                  icon: widget.postData.likes.contains(user.uid)
-                      ? const Icon(
-                          Icons.favorite,
-                          color: Colors.red,
-                        )
-                      : const Icon(
-                          Icons.favorite_border,
-                          color: Colors.red,
-                        ),
-                ),
-              ),
+              BlocBuilder<AuthCubit, User>(builder: (context, user) {
+                return LikeAnimation(
+                  // if user liked the post, show red heart
+                  isAnimating: widget.postData.likes.contains(user.uid),
+                  smallLike: true, // small heart
+                  child: IconButton(
+                    onPressed: () async {
+                      // 작은 하트를 누르면 좋아요를 추가하거나 삭제함
+                      await FirestoreMethods().likePost(
+                        postId: widget.postData.postId,
+                        uid: user.uid,
+                        likes: widget.postData.likes,
+                      );
+                    },
+                    icon: widget.postData.likes.contains(user.uid)
+                        ? const Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                          )
+                        : const Icon(
+                            Icons.favorite_border,
+                            color: Colors.red,
+                          ),
+                  ),
+                );
+              }),
               IconButton(
                 onPressed: () => Navigator.of(context).push(
                   // MaterialPageRoute를 사용하여 CommentsScreen으로 이동

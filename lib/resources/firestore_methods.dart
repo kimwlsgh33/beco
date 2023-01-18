@@ -1,7 +1,7 @@
-import 'package:beco/models/pomodoro.dart';
+import 'package:beco/models/pomo_log.dart';
 import 'package:beco/models/post.dart';
 import 'package:beco/models/wallet.dart';
-import 'package:beco/resources/storage_method.dart';
+import 'package:beco/resources/storage_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -10,67 +10,35 @@ import 'package:uuid/uuid.dart';
 class FirestoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // upload
-  Future<String> uploadPost(
-    String description,
-    Uint8List file,
-    String uid,
-    String username,
-    String profImage,
-  ) async {
+  Future<String> updatePomoLog({
+    required String uid,
+    required int time,
+    bool isFocus = true,
+  }) async {
     String res = "Something went wrong";
     try {
-      String photoUrl = await StorageMethods()
-          .uploadImageToStorage(childName: "posts", file: file, isPost: true);
-
-      // v1
-      String postId = Uuid().v1();
-
-      Post post = Post(
-        description: description,
-        uid: uid,
-        username: username,
-        postId: postId,
-        datePublished: DateTime.now(),
-        postUrl: photoUrl,
-        profImage: profImage,
-        likes: [],
-      );
-
-      _firestore.collection("posts").doc(postId).set(
-            post.toJson(),
-          );
-      res = "success";
+      QuerySnapshot snap = await _firestore
+          .collection('pomodoros')
+          .where('uid', isEqualTo: uid)
+          .get();
+      if (snap.docs.isNotEmpty) {
+        DocumentSnapshot doc = snap.docs.first;
+        PomoLog log = PomoLog.fromJson(doc.data() as Map<String, dynamic>);
+        if (isFocus) {
+          log.totalFocus += time;
+        } else {
+          log.totalBreak += time;
+        }
+        await doc.reference.update(log.toJson());
+        res = "Success";
+      } else {
+        res = "No log found";
+      }
     } catch (e) {
       res = e.toString();
     }
-    return res;
-  }
 
-  Future<void> likePost({
-    required String postId,
-    required String uid,
-    required List likes,
-  }) async {
-    try {
-      if (likes.contains(uid)) {
-        // set vs update : set은 전체를 덮어쓰고, update는 일부만 업데이트
-        await _firestore.collection("posts").doc(postId).update(
-          {
-            "likes":
-                FieldValue.arrayRemove([uid]), // arrayRemove : 배열에서 특정 값을 제거
-          },
-        );
-      } else {
-        await _firestore.collection("posts").doc(postId).update(
-          {
-            "likes": FieldValue.arrayUnion([uid]), // arrayUnion : 배열에 특정 값을 추가
-          },
-        );
-      }
-    } catch (e) {
-      print(e.toString());
-    }
+    return res;
   }
 
   Future<String> addComment({
@@ -104,6 +72,31 @@ class FirestoreMethods {
       } else {
         res = "comment is empty";
       }
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
+  }
+
+  Future<String> addWallet(
+    String uid,
+  ) async {
+    String res = "Something went wrong";
+    try {
+      String walletId = const Uuid().v1();
+      await _firestore
+          .collection("users")
+          .doc(uid)
+          .collection("wallets")
+          .doc(walletId)
+          .set({
+        'walletId': walletId,
+        'uid': uid,
+        'amount': 0.0,
+        'currency': 'USD',
+      });
+
+      res = "success";
     } catch (e) {
       res = e.toString();
     }
@@ -144,26 +137,6 @@ class FirestoreMethods {
     }
   }
 
-  Future<String> addWallet(Wallet wallet) async {
-    String res = "Something went wrong";
-    try {
-      String walletId = Uuid().v1();
-      await _firestore
-          .collection("users")
-          .doc(wallet.uid)
-          .collection("wallets")
-          .doc(walletId)
-          .set(
-            wallet.toJson(),
-          );
-
-      res = "success";
-    } catch (e) {
-      res = e.toString();
-    }
-    return res;
-  }
-
   Future<List<Wallet>> getWallets() async {
     List<Wallet> wallets = [];
     try {
@@ -177,6 +150,8 @@ class FirestoreMethods {
         wallets.add(Wallet.fromJson(doc.data()));
       }
 
+      // print(wallets);
+
       // await _firestore.collection('users').doc(uid).update({
       //   'wallet': FieldValue.arrayUnion([currency])
       // });
@@ -187,23 +162,61 @@ class FirestoreMethods {
     return wallets;
   }
 
-  Future<String> initPomodoro(
+  Future<void> likePost({
+    required String postId,
+    required String uid,
+    required List likes,
+  }) async {
+    try {
+      if (likes.contains(uid)) {
+        // set vs update : set은 전체를 덮어쓰고, update는 일부만 업데이트
+        await _firestore.collection("posts").doc(postId).update(
+          {
+            "likes":
+                FieldValue.arrayRemove([uid]), // arrayRemove : 배열에서 특정 값을 제거
+          },
+        );
+      } else {
+        await _firestore.collection("posts").doc(postId).update(
+          {
+            "likes": FieldValue.arrayUnion([uid]), // arrayUnion : 배열에 특정 값을 추가
+          },
+        );
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  // upload
+  Future<String> uploadPost(
+    String description,
+    Uint8List file,
     String uid,
+    String username,
+    String profImage,
   ) async {
     String res = "Something went wrong";
     try {
-      String pomodoroId = Uuid().v1();
-      Pomodoro pomodoro = Pomodoro(
-        pomodoroId: pomodoroId,
+      String photoUrl = await StorageMethods()
+          .uploadImageToStorage(childName: "posts", file: file, isPost: true);
+
+      // v1
+      String postId = const Uuid().v1();
+
+      Post post = Post(
+        description: description,
         uid: uid,
-        focusTime: 1500,
-        breakTime: 900,
-        totalPomodoros: 0,
-        totalSeconds: 0,
+        username: username,
+        postId: postId,
+        datePublished: DateTime.now(),
+        postUrl: photoUrl,
+        profImage: profImage,
+        likes: [],
       );
-      // set vs update : set은 전체를 덮어쓰고, update는 일부만 업데이트
-      await _firestore.collection("pomodoros").doc(pomodoroId).set(
-            pomodoro.toJson(),
+
+      _firestore.collection("posts").doc(postId).set(
+            post.toJson(),
           );
       res = "success";
     } catch (e) {

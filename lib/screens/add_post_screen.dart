@@ -1,11 +1,12 @@
+import 'package:beco/cubits/auth_cubit.dart';
 import 'package:beco/resources/firestore_methods.dart';
 import 'package:beco/utils/colors.dart';
 import 'package:beco/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:beco/models/user.dart';
-import 'package:beco/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddPostScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
         profImage,
       );
 
-      if(!mounted) return;
+      if (!mounted) return;
 
       if (res == "success") {
         setState(() {
@@ -115,7 +116,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of<UserProvider>(context).getUser;
     // 파일 존재 여부에 따라 다른 위젯을 반환
     return _file == null
         ? Center(
@@ -136,21 +136,23 @@ class _AddPostScreenState extends State<AddPostScreen> {
               centerTitle: false,
               // actions : 앱바 오른쪽에 위치하는 위젯
               actions: [
-                TextButton(
-                  onPressed: () => postImage(
-                    user.uid,
-                    user.username,
-                    user.photoUrl,
-                  ),
-                  child: const Text(
-                    'Post',
-                    style: TextStyle(
-                      color: Colors.blueAccent,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                BlocBuilder<AuthCubit, User>(builder: (context, user) {
+                  return TextButton(
+                    onPressed: () => postImage(
+                      user.uid,
+                      user.username,
+                      user.photoUrl,
                     ),
-                  ),
-                ),
+                    child: const Text(
+                      'Post',
+                      style: TextStyle(
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  );
+                }),
               ],
             ),
             body: Column(children: [
@@ -164,13 +166,15 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 20,
-                    // firebase에서 가져온 다운로드 url을 통해 이미지를 가져옴
-                    backgroundImage: NetworkImage(
-                      user.photoUrl,
-                    ),
-                  ),
+                  BlocBuilder<AuthCubit, User>(builder: (context, user) {
+                    return CircleAvatar(
+                      radius: 20,
+                      // firebase에서 가져온 다운로드 url을 통해 이미지를 가져옴
+                      backgroundImage: NetworkImage(
+                        user.photoUrl,
+                      ),
+                    );
+                  }),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.3,
                     child: TextField(
