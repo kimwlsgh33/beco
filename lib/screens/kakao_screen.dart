@@ -75,7 +75,7 @@ class _TossScreenState extends State<TossScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.only(
               left: 20,
@@ -103,7 +103,7 @@ class _TossScreenState extends State<TossScreen> {
                           '2023년에도 세뱃돈은 카뱅으로!',
                           style: TextStyle(
                             color: kakaoSecondaryColor,
-                            fontSize: 16,
+                            fontSize: 14,
                           ),
                         ),
                         SizedBox(height: 4),
@@ -111,7 +111,7 @@ class _TossScreenState extends State<TossScreen> {
                           '세뱃돈 보내면 최대 10만원 드려요',
                           style: TextStyle(
                             color: kakaoBackgroundColor,
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

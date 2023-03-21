@@ -4,6 +4,7 @@ import 'package:beco/resources/storage_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:flutter/material.dart';
 
 class AuthMethod {
@@ -155,5 +156,19 @@ class AuthMethod {
   // logging out user
   Future<void> logoutUser() async {
     await _auth.signOut();
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    final googleAuth =
+        await googleUser?.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    return await _auth.signInWithCredential(credential);
   }
 }

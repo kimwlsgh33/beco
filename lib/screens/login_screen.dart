@@ -7,8 +7,10 @@ import 'package:beco/utils/colors.dart';
 import 'package:beco/utils/global_variables.dart';
 import 'package:beco/utils/utils.dart';
 import 'package:beco/widgets/text_field_input.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -59,6 +61,16 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void signInWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    UserCredential res = await AuthMethod().signInWithGoogle();
+
+    print('res: $res');
   }
 
   @override

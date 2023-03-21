@@ -24,8 +24,7 @@ class HomeScreen extends StatelessWidget {
             return const ResponsiveLayout(
               webScreen: WebScreenLayout(),
               mobileScreen: MobileScreenLayout(),
-            );
-          } else {
+            ); } else {
             return const LoginScreen();
           }
         }
